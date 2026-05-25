@@ -1,23 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
 namespace PRG182
 {
     internal class Program
     {
         static double income = 0;
-        static double exspences = 0;
+        static double expenses = 0;
         static Dictionary<string, List<double>> peopleIncome = new Dictionary<string, List<double>>();
-        static Dictionary<string, List<double>> peopleExspence= new Dictionary<string, List<double>>();
+        static Dictionary<string, List<double>> peopleExpense= new Dictionary<string, List<double>>();
         static void Main(string[] args)
         {
             bool running = true;
@@ -100,14 +88,14 @@ namespace PRG182
             peopleIncome[name].Add(income);
             Console.WriteLine("Congrats you succesfully added an income of " + income + " to your account!");
         }
-        static void AddExspence(string name , double exspense)
+        static void AddExpense(string name , double exspense)
         {
-            if (!peopleExspence.ContainsKey(name))
+            if (!peopleExpense.ContainsKey(name))
             {
-                peopleExspence[name] = new List<double>();
+                peopleExpense[name] = new List<double>();
             }
             peopleExspence[name].Add(exspense);
-            Console.WriteLine("Congrats you succesfully added an exspense of " + exspense + " to your account!");
+            Console.WriteLine("Congrats you succesfully added an expense of " + expense + " to your account!");
         }
       
 
@@ -124,11 +112,11 @@ namespace PRG182
                     ? peopleExspence[name].Sum()
                     : 0;
 
-                double balance = totalIncome - totalExspence;
+                double balance = totalIncome - totalExpense;
 
                 Console.WriteLine($"Name: {name}");
                 Console.WriteLine($"Total Income: {totalIncome}");
-                Console.WriteLine($"Total Exspence: {totalExspence}");
+                Console.WriteLine($"Total Exspence: {totalExpense}");
                 Console.WriteLine($"Balance: {balance}");
                 Console.WriteLine();
             }
