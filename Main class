@@ -55,10 +55,9 @@ namespace PRG182
                         DisplaySummury();
                         break;
                     case 3:
-
+                        void ViewCatagory();
                         break;
                     case 4:
-                        
 
                         break;
                     case 5:
@@ -121,5 +120,56 @@ namespace PRG182
                 Console.WriteLine();
             }
         }
+
+static void ViewCatagory()
+{
+    Console.WriteLine("\nView by Category \n --------------------------------------");
+
+    Console.Write("Enter the Category you'd like to review: ");
+    string chosenCategory = Console.ReadLine().Trim();
+
+    Console.WriteLine("\n--- Results for Category: " + chosenCategory + "---");
+
+    double totalIncomeInCategory = 0;
+    double totalExpenseInCategory = 0;
+
+    // Check Income - code doesn't store categories
+    Console.WriteLine("\nIncome records under current category:");
+    foreach (var person in peopleIncome)
+    {
+        double personTotal = 0;
+
+        // Manual run trough list(array) using a for loop
+        for (int i = 0; i < person.Value.Count; i++)
+        {
+            personTotal += person.Value[i];
+        }
+
+        Console.WriteLine(person.Key + ": R" + personTotal);
+        totalIncomeInCategory += personTotal;
+    }
+
+    // Check Expenses
+    Console.WriteLine("\nExpense records under this category:");
+    foreach (var person in peopleExpense)
+    {
+        double personTotal = 0;
+
+        // Manual summation using a for loop
+        for (int i = 0; i < person.Value.Count; i++)
+        {
+            personTotal += person.Value[i];
+        }
+
+        Console.WriteLine(person.Key + ": R" + personTotal);
+        totalExpenseInCategory += personTotal;
+    }
+
+    Console.WriteLine("\n-----------------------------------");
+    Console.WriteLine("Total Income in " + chosenCategory + ": R" + totalIncomeInCategory);
+    Console.WriteLine("Total Expense in " + chosenCategory + ": R" + totalExpenseInCategory);
+    Console.WriteLine("Net Balance for " + chosenCategory + ": R" + totalIncomeInCategory - totalExpenseInCategory);
+}
+
     }
 }
