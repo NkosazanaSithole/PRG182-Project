@@ -1,5 +1,4 @@
-# PRG182-Project
-PRG182 Project Milestone 2 - Group 6
+# PRG182 Project Milestone 2 - Group 6
 Shared Budget Tracker application
 This is a C# console application designed to help university students living together keep track of their shared expenses and income. It gives housemates a simple menu interface to log transactions, categorize spending, and check financial summaries so everyone stays on top of the budget.
 
