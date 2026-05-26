@@ -155,7 +155,7 @@ static void ViewCatagory()
     {
         double personTotal = 0;
 
-        // Manual summation using a for loop
+        // Manual run through using a for loop
         for (int i = 0; i < person.Value.Count; i++)
         {
             personTotal += person.Value[i];
