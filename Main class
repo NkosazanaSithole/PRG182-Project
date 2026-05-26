@@ -1,65 +1,282 @@
 namespace PRG182
 {
+    // Enum to distinguish transaction types as per class diagram
+    enum TransactionType
+    {
+        INCOME = 0,
+        EXPENSE = 1
+    }
+
+    // Transaction class to store each record (user, category, amount, type)
+    class Transaction
+    {
+        public string User { get; set; }
+        public string Category { get; set; }
+        public double Amount { get; set; }
+        public TransactionType Type { get; set; }
+
+        public Transaction(string user, string category, double amount, TransactionType type)
+        {
+            User = user;
+            Category = category;
+            Amount = amount;
+            Type = type;
+        }
+    }
+
     internal class Program
     {
-        static double income = 0;
-        static double expenses = 0;
-        static Dictionary<string, List<double>> peopleIncome = new Dictionary<string, List<double>>();
-        static Dictionary<string, List<double>> peopleExpense= new Dictionary<string, List<double>>();
+    
+        static string[] users = { "Mulalo", "Jander", "Ruhaan", "Nkosazana" };
+        static string[] categories = { "Allowance", "Rent", "Groceries", "WiFi" };
+
+        // Running totals
+        static double totalIncome = 0;
+        static double totalExpenses = 0;
+
+
+        static List<Transaction> transactions = new List<Transaction>();
+
         static void Main(string[] args)
         {
             bool running = true;
             while (running)
             {
                 DisplayMenu();
+                Console.Write("Enter an option: ");
 
-                Console.Write("Enter a option you like to do: ");
-
-                int option = int.Parse(Console.ReadLine());
-
-
+                int option = ReadInt();
 
                 Console.Clear();
                 switch (option)
                 {
                     case 1:
-
-                        Console.WriteLine("1. Income \n2. Expense");
-                        Console.Write("Enter a option you like to do: ");
-                        int option2 = int.Parse(Console.ReadLine());
-
-                        switch (option2)
-                        {
-                            case 1:
-                                    Console.Write("Enter your name: ");
-                                    string name = Console.ReadLine();
-                                    Console.Write("Enter the amount of income: ");
-                                    double income = double.Parse(Console.ReadLine());
-
-                                    RecordTransaction(name, income);
-                                break;
-                            case 2:
-                               
-                                {
-                                    Console.Write("Enter your name: ");
-                                    string name2 = Console.ReadLine();
-                                    Console.Write("Enter the amount of income: ");
-                                    double exspense = double.Parse(Console.ReadLine());
-
-                                    AddExspence(name2, exspense);
-                                }
-                                break;
-                        }
+                        RecordTransaction();
                         break;
                     case 2:
-                        DisplaySummury();
+                        ViewSummary();
                         break;
                     case 3:
-                        void ViewCatagory();
+                        ViewByCategory();
                         break;
                     case 4:
-
+                        ViewByUser();
                         break;
+                    case 5:
+                        Console.WriteLine("Goodbye!");
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option, please try again!");
+                        break;
+                }
+
+                if (running)
+                {
+                    Console.WriteLine("\nPress Enter to return to the menu...");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+            }
+        }
+
+        
+
+        // Integer value input validation method 
+        static int ReadInt()
+        {
+            int result;
+            while (!int.TryParse(Console.ReadLine(), out result))
+            {
+                Console.Write("Invalid input. Please enter a number: ");
+            }
+            return result;
+        }
+
+        // Double value input validation method
+        static double ReadDouble()
+        {
+            double result;
+            while (!double.TryParse(Console.ReadLine(), out result) || result <= 0)
+            {
+                Console.Write("Invalid amount. Please enter a positive number: ");
+            }
+            return result;
+        }
+
+
+        static void DisplayMenu()
+        {
+            Console.WriteLine("===== Budget Tracker =====");
+            Console.WriteLine("1. Record income or expense");
+            Console.WriteLine("2. View summary");
+            Console.WriteLine("3. View by category");
+            Console.WriteLine("4. View by user");
+            Console.WriteLine("5. Exit");
+            Console.WriteLine("==========================");
+        }
+
+        static void RecordTransaction()
+        {
+            // Step 1: Choose a user from the predefined list
+            Console.WriteLine("Select a user:");
+            for (int i = 0; i < users.Length; i++)
+                Console.WriteLine($"  {i + 1}. {users[i]}");
+            Console.Write("Enter user number: ");
+
+            int userIndex = ReadInt() - 1;
+            if (userIndex < 0 || userIndex >= users.Length)
+            {
+                Console.WriteLine("Invalid user selection.");
+                return;
+            }
+            string selectedUser = users[userIndex];
+
+            // Step 2: Choose income or expense (sets TransactionType)
+            Console.WriteLine("\n1. Income\n2. Expense");
+            Console.Write("Enter an option: ");
+            int typeChoice = ReadInt();
+
+            TransactionType transactionType;
+            if (typeChoice == 1)
+                transactionType = TransactionType.INCOME;
+            else if (typeChoice == 2)
+                transactionType = TransactionType.EXPENSE;
+            else
+            {
+                Console.WriteLine("Invalid option.");
+                return;
+            }
+
+            // Step 3: Choose a category
+            Console.WriteLine("\nSelect a category:");
+            for (int i = 0; i < categories.Length; i++)
+                Console.WriteLine($"  {i + 1}. {categories[i]}");
+            Console.Write("Enter category number: ");
+
+            int catIndex = ReadInt() - 1;
+            if (catIndex < 0 || catIndex >= categories.Length)
+            {
+                Console.WriteLine("Invalid category selection.");
+                return;
+            }
+            string selectedCategory = categories[catIndex];
+
+            // Step 4: Enter amount
+            Console.Write("\nEnter the amount: R");
+            double amount = ReadDouble();
+
+            // Step 5: Create transaction record and update running totals
+            transactions.Add(new Transaction(selectedUser, selectedCategory, amount, transactionType));
+
+            if (transactionType == TransactionType.INCOME)
+            {
+                totalIncome += amount;
+                Console.WriteLine($"\nIncome of R{amount:F2} recorded under '{selectedCategory}' for {selectedUser}.");
+            }
+            else
+            {
+                totalExpenses += amount;
+                Console.WriteLine($"\nExpense of R{amount:F2} recorded under '{selectedCategory}' for {selectedUser}.");
+            }
+        }
+
+        static void ViewSummary()
+        {
+            Console.WriteLine("===== Financial Summary =====");
+            Console.WriteLine($"Total Income:   R{totalIncome:F2}");
+            Console.WriteLine($"Total Expenses: R{totalExpenses:F2}");
+            Console.WriteLine($"Balance:        R{totalIncome - totalExpenses:F2}");
+            Console.WriteLine("=============================");
+
+            if (transactions.Count == 0)
+                Console.WriteLine("No transactions recorded yet.");
+        }
+
+        static void ViewByCategory()
+        {
+            if (transactions.Count == 0)
+            {
+                Console.WriteLine("No transactions recorded yet.");
+                return;
+            }
+
+            Console.WriteLine("Select a category:");
+            for (int i = 0; i < categories.Length; i++)
+                Console.WriteLine($"  {i + 1}. {categories[i]}");
+            Console.Write("Enter category number: ");
+
+            int catIndex = ReadInt() - 1;
+            if (catIndex < 0 || catIndex >= categories.Length)
+            {
+                Console.WriteLine("Invalid category option.");
+                return;
+            }
+            string chosenCategory = categories[catIndex];
+
+            double catIncome = 0;
+            double catExpense = 0;
+
+            foreach (Transaction t in transactions)
+            {
+                if (t.Category == chosenCategory)
+                {
+                    if (t.Type == TransactionType.INCOME)
+                        catIncome += t.Amount;
+                    else
+                        catExpense += t.Amount;
+                }
+            }
+
+            Console.WriteLine($"\n===== Category: {chosenCategory} =====");
+            Console.WriteLine($"Total Income:   R{catIncome:F2}");
+            Console.WriteLine($"Total Expenses: R{catExpense:F2}");
+            Console.WriteLine($"Net:            R{catIncome - catExpense:F2}");
+        }
+
+
+        static void ViewByUser()
+        {
+            if (transactions.Count == 0)
+            {
+                Console.WriteLine("No transactions recorded yet.");
+                return;
+            }
+
+            Console.WriteLine("Select a user:");
+            for (int i = 0; i < users.Length; i++)
+                Console.WriteLine($"  {i + 1}. {users[i]}");
+            Console.Write("Enter user number: ");
+
+            int userIndex = ReadInt() - 1;
+            if (userIndex < 0 || userIndex >= users.Length)
+            {
+                Console.WriteLine("User not found.");
+                return;
+            }
+            string chosenUser = users[userIndex];
+
+            double userIncome = 0;
+            double userExpense = 0;
+
+            foreach (Transaction t in transactions)
+            {
+                if (t.User == chosenUser)
+                {
+                    if (t.Type == TransactionType.INCOME)
+                        userIncome += t.Amount;
+                    else
+                        userExpense += t.Amount;
+                }
+            }
+
+            Console.WriteLine($"\n===== User: {chosenUser} =====");
+            Console.WriteLine($"Total Income:   R{userIncome:F2}");
+            Console.WriteLine($"Total Expenses: R{userExpense:F2}");
+            Console.WriteLine($"Balance:        R{userIncome - userExpense:F2}");
+        }
+    }
+}
                     case 5:
                         running = false;
                         break;
